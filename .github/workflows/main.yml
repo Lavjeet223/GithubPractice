@@ -10,9 +10,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6.0.1
 
-      - name: Azure PowerShell Action
-        uses: Azure/powershell@v2
-        with: 
-          terraform init
-          
-          
+      - name: Azure Login
+        uses: Azure/login@v2.3.0
+        with:
+          client-id: 5188b71c-c65e-44f8-bcf6-e138f75658f8
+          tenant-id: 5642c8d6-0058-4d89-9a83-3f5de4d280b6
+          subscription-id: b0805f22-5464-4af2-968e-fabac43ebd20
