@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
 
-run-name: $github.actor
+run-name: ${{ github.actor }}
 permissions:
   id-token: write
   contents: read
