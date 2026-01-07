@@ -20,10 +20,7 @@ jobs:
           client-id: ${{secrets.AZURE_CLIENT_ID}}
           tenant-id: ${{secrets.AZURE_TENANT_ID}}
           subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
-
-
-      # - name: HashiCorp - Setup Terraform
-      #   uses: hashicorp/setup-terraform@v2.0.3
+          enable-AzPSSession: true
 
       - name: Terraform Init
         id: Init
@@ -42,14 +39,14 @@ jobs:
 
       - name: Terraform Plan
         id: Plan
-        run: terraform plan -no-color -input=false
+        run: terraform plan -no-color -input=false -out=tfplan
         #continue-on-error: true
         working-directory: Infra/
         
   
       - name: Terraform Apply
         id: Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -no-color tfplan
         working-directory: Infra/
         
         
