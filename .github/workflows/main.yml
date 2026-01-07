@@ -22,12 +22,9 @@ jobs:
           subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
 
 
-      - name: Azure PowerShell Action
-        uses: Azure/powershell@v2
-        with:
-          inlineScript: 
-            terraform init;
-            terraform fmt;
-            terraform validate;
-            terraform plan;
-            terraform apply -auto-approve;
+      - name: HashiCorp - Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+
+      - name: terraform init
+        run: terraform init
+        
