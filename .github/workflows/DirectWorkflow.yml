@@ -1,0 +1,59 @@
+name: Simple_workflow
+on:
+  pull_request:
+    branches:
+     - main
+  push:
+    branches:
+      - main
+
+run-name: ${{ github.actor }}    
+
+permissions:
+  id-token: write
+  contents: read
+  
+jobs:
+  Terraform-Init-Plan:
+    runs-on: self-hosted #ubuntu-latest
+    
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: Azure/login@v2.3.0
+        with:
+          client-id: ${{secrets.AZURE_CLIENT_ID}}
+          tenant-id: ${{secrets.AZURE_TENANT_ID}}
+          subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          
+
+      - name: Terraform Init
+        id: Init
+        run: terraform init
+        working-directory: Infra/
+
+      - name: Terraform fmt
+        id: Fmt
+        run: terraform fmt
+        working-directory: Infra/
+
+      - name: Terraform Validate
+        id: Validate
+        run: terraform validate
+        working-directory: Infra/
+
+      - name: Terraform Plan
+        id: Plan
+        run: terraform plan -no-color -input=false -out=tfplan
+        #continue-on-error: true
+        working-directory: Infra/
+         
+      - name: Terraform Apply
+        id: Apply
+        run: terraform apply -auto-approve -no-color tfplan
+        working-directory: Infra/
+        
+        
