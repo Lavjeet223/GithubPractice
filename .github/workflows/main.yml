@@ -1,12 +1,19 @@
-name: 1st_workflow
+name: Dev_workflow
 on:
-  workflow_dispatch:
+  pull_request:
+    branches:
+     - main
   push:
+    branches:
+      - main
+      - feature/**
 
-run-name: ${{ github.actor }}
+run-name: ${{ github.actor }}    
+
 permissions:
   id-token: write
   contents: read
+  
 jobs:
   Terraform-Init-Plan:
     runs-on: self-hosted #ubuntu-latest
@@ -49,18 +56,13 @@ jobs:
         run: terraform plan -no-color -input=false -out=tfplan
         #continue-on-error: true
         working-directory: Infra/
-
-      - name: Upload a Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: tfplan
-          path: tfplan
-              
+         
 
 
   Terraform-Apply:
     runs-on: self-hosted
     needs: Terraform-Init-Plan
+    if: github.ref=='refs/head/main'
     environment: dev
 
     env:
@@ -80,19 +82,14 @@ jobs:
           tenant-id: ${{secrets.AZURE_TENANT_ID}}
           subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
       
-      - name: Download a Build Artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: tfplan
-
       - name: Terraform Init
         id: Init
-        run: terraform init
+        run: terraform init -input-false
         working-directory: Infra/
 
       - name: Terraform Apply
         id: Apply
-        run: terraform apply -auto-approve -no-color tfplan
+        run: terraform apply --auto-approve
         working-directory: Infra/
         
         
