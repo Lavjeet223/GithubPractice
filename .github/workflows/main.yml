@@ -10,7 +10,7 @@ permissions:
 jobs:
   Terraform-job:
     runs-on: self-hosted #ubuntu-latest
-
+    environment: dev
     env:
       ARM_USE_OIDC: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
