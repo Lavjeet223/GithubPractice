@@ -17,7 +17,7 @@ permissions:
 jobs:
   Terraform-Init-Plan:
     runs-on: self-hosted #ubuntu-latest
-    
+    environment: dev
     env:
       ARM_USE_OIDC: true
       ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
@@ -58,13 +58,13 @@ jobs:
         working-directory: Infra/
          
 
-        
+
 
   Terraform-Apply:
     runs-on: self-hosted
     needs: Terraform-Init-Plan
     if: github.ref=='refs/head/main'
-    environment: dev
+    environment: prod
 
     env:
       ARM_USE_OIDC: true
