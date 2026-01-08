@@ -63,7 +63,7 @@ jobs:
   Terraform-Apply:
     runs-on: self-hosted
     needs: Terraform-Init-Plan
-    if: github.ref=='refs/head/main'
+    if: github.ref=='refs/heads/main'
     environment: prod
 
     env:
