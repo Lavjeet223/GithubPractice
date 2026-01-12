@@ -1,8 +1,8 @@
 rgs = {
-  rg-TodoInfra-UK = {
+  rg-TodoInfra-UK-prod = {
     location = "southindia"
     tags = {
-      environment = "dev"
+      environment = "prod"
       project     = "TodoInfra"
     }
   }
@@ -10,9 +10,9 @@ rgs = {
 
 
 vnets_subnets = {
-  vnet-TodoInfra-UK = {
+  vnet-TodoInfra-UK-prod = {
     location            = "southindia"
-    resource_group_name = "rg-TodoInfra-UK"
+    resource_group_name = "rg-TodoInfra-UK-prod"
     address_space       = ["10.0.0.0/16"]
     # The AzureBastionSubnet Block is required in subnets if enable_bastion=true 
     # AzureBastionSubnet = {
@@ -35,9 +35,9 @@ vnets_subnets = {
 
 vms = {
   "frontendvm" = {
-    resource_group_name = "rg-TodoInfra-UK"
+    resource_group_name = "rg-TodoInfra-UK-prod"
     location            = "southindia"
-    vnet_name           = "vnet-TodoInfra-UK"
+    vnet_name           = "vnet-TodoInfra-UK-prod"
     subnet_name         = "frontend-subnet"
     size                = "Standard_D2s_v3"
     admin_username      = "devopsadmin"
@@ -53,9 +53,9 @@ vms = {
     enable_public_ip = true
   }
   "backendvm" = {
-    resource_group_name = "rg-TodoInfra-UK"
+    resource_group_name = "rg-TodoInfra-UK-prod"
     location            = "southindia"
-    vnet_name           = "vnet-TodoInfra-UK"
+    vnet_name           = "vnet-TodoInfra-UK-prod"
     subnet_name         = "backend-subnet"
     size                = "Standard_D2s_v3"
     admin_username      = "devopsadmin"

@@ -1,4 +1,4 @@
-name: Dev_workflow
+name: staging_workflow
 on:
   pull_request:
     branches:
@@ -39,23 +39,23 @@ jobs:
       - name: Terraform Init
         id: Init
         run: terraform init
-        working-directory: Infra/
+        working-directory: Infra/environments/staging/
 
       - name: Terraform fmt
         id: Fmt
         run: terraform fmt
-        working-directory: Infra/
+        working-directory: Infra/environments/staging/
 
       - name: Terraform Validate
         id: Validate
         run: terraform validate
-        working-directory: Infra/
+        working-directory: Infra/environments/staging/
 
       - name: Terraform Plan
         id: Plan
         run: terraform plan -no-color -input=false -out=tfplan
         #continue-on-error: true
-        working-directory: Infra/
+        working-directory: Infra/environments/staging/
          
 
 
@@ -86,11 +86,11 @@ jobs:
       - name: Terraform Init
         id: Init
         run: terraform init -input=false
-        working-directory: Infra/
+        working-directory: Infra/environments/staging/
 
       - name: Terraform Apply
         id: Apply
         run: terraform apply --auto-approve
-        working-directory: Infra/
+        working-directory: Infra/environments/staging/
         
         

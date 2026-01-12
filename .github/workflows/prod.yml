@@ -1,0 +1,96 @@
+name: Prod_workflow
+on:
+  pull_request:
+    branches:
+     - main
+  push:
+    branches:
+      - main
+      - feature/**
+
+run-name: ${{ github.actor }}    
+
+permissions:
+  id-token: write
+  contents: read
+  
+jobs:
+  Terraform-Init-Plan:
+    runs-on: self-hosted #ubuntu-latest
+    environment: dev
+    env:
+      ARM_USE_OIDC: true
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: Azure/login@v2.3.0
+        with:
+          client-id: ${{secrets.AZURE_CLIENT_ID}}
+          tenant-id: ${{secrets.AZURE_TENANT_ID}}
+          subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          
+
+      - name: Terraform Init
+        id: Init
+        run: terraform init
+        working-directory: Infra/environments/prod/
+
+      - name: Terraform fmt
+        id: Fmt
+        run: terraform fmt
+        working-directory: Infra/environments/prod/
+
+      - name: Terraform Validate
+        id: Validate
+        run: terraform validate
+        working-directory: Infra/environments/prod/
+
+      - name: Terraform Plan
+        id: Plan
+        run: terraform plan -no-color -input=false -out=tfplan
+        #continue-on-error: true
+        working-directory: Infra/environments/prod/
+         
+
+
+
+  Terraform-Apply:
+    runs-on: self-hosted
+    needs: Terraform-Init-Plan
+    if: github.ref=='refs/heads/main'
+    environment: prod
+
+    env:
+      ARM_USE_OIDC: true
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: Azure/login@v2.3.0
+        with:
+          client-id: ${{secrets.AZURE_CLIENT_ID}}
+          tenant-id: ${{secrets.AZURE_TENANT_ID}}
+          subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+      
+      - name: Terraform Init
+        id: Init
+        run: terraform init -input=false
+        working-directory: Infra/environments/prod/
+
+      - name: Terraform Apply
+        id: Apply
+        run: terraform apply --auto-approve
+        working-directory: Infra/environments/prod/
+        
+        
