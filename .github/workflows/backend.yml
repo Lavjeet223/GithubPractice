@@ -1,0 +1,59 @@
+name: Backend_workflow
+on: workflow_dispatch
+
+run-name: ${{ github.actor }}    
+
+permissions:
+  id-token: write
+  contents: read
+  
+jobs:
+  #----------------------------Terraform Backend Job ----------------------------------
+  Terraform-Init-Plan:
+    runs-on: self-hosted #ubuntu-latest
+    environment: dev
+    env:
+      ARM_USE_OIDC: true
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Azure Login
+        uses: Azure/login@v2.3.0
+        with:
+          client-id: ${{secrets.AZURE_CLIENT_ID}}
+          tenant-id: ${{secrets.AZURE_TENANT_ID}}
+          subscription-id: ${{secrets.AZURE_SUBSCRIPTION_ID}}
+          
+
+      - name: Terraform Init
+        id: Init
+        run: terraform init
+        working-directory: Backend/
+
+      - name: Terraform fmt
+        id: Fmt
+        run: terraform fmt
+        working-directory: Backend/
+
+      - name: Terraform Validate
+        id: Validate
+        run: terraform validate
+        working-directory: Backend/
+
+      - name: Terraform Plan
+        id: Plan
+        run: terraform plan -no-color -input=false -out=tfplan
+        #continue-on-error: true
+        working-directory: Backend/
+         
+      - name: Terraform Apply
+        id: Apply
+        run: terraform apply --auto-approve
+        working-directory: Backend/
+        
+        

@@ -6,7 +6,7 @@ on:
   push:
     branches:
       - main
-      - feature/**
+
 
 run-name: ${{ github.actor }}    
 
@@ -15,6 +15,7 @@ permissions:
   contents: read
   
 jobs:
+ #----------------------------Terraform Init & Plan Job----------------------------------
   Terraform-Init-Plan:
     runs-on: self-hosted #ubuntu-latest
     environment: dev
@@ -58,6 +59,7 @@ jobs:
         working-directory: Infra/environments/dev/
          
 
+  #----------------------------Terraform Apply Job---------------------------------- 
 
 
   Terraform-Apply:
