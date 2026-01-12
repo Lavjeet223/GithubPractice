@@ -12,7 +12,7 @@ module "networking" {
 
 module "vms" {
   depends_on      = [module.rgs, module.networking]
-  source          = "../..../modules/LinuxVirtualMachine"
+  source          = "../../../modules/LinuxVirtualMachine"
   vms             = var.vms
   vnet_subnet_ids = module.networking.vnet_subnet_ids
 }
