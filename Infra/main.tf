@@ -17,3 +17,4 @@ module "vms" {
   vnet_subnet_ids = module.networking.vnet_subnet_ids
 }
 
+
