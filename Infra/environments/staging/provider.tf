@@ -5,6 +5,12 @@ terraform {
       version = ">4.3.0"
     }
   }
+  backend "azurerm" {
+    resource_group_name  = "Backend-rg"
+    storage_account_name = "lavbackendstg"
+    container_name       = "tfstate"
+    key                  = "staging.tfstate"
+  }
 }
 
 provider "azurerm" {
